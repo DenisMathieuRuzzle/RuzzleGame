@@ -34,32 +34,6 @@ noeud_t *creer_fils(noeud_t *n,const char c){
 	return n->fils[idx];
 }
 
-// Ajoute un mot dans l'arbre étant donné sa racine
-void ajouter_mot(arbre_t *a,const char *s){
-	unsigned i,idx_cur,n = strlen(s);
-	noeud_t *noeud_cur = a;
-	for(i=0;i<n;++i){
-		idx_cur = char2index(s[i]);
-		noeud_cur = creer_fils(noeud_cur,s[i]);
-	}
-	creer_fils(noeud_cur,'\0');
-}
-
-// Supprime tout le sous arbre à partir d'un noeud n
-void supprimer_sous_arbre(noeud_t *n){
-	unsigned i;
-	for(i=0;i<=NB_CARACTERE;++i){
-		if (n->fils[i]) supprimer_sous_arbre(n->fils[i]);
-		free(n->fils[i]);
-	}
-	free(n->fils);
-}
-
-// Supprime un arbre étant donné sa racine
-void supprimer_arbre(arbre_t *a){
-	supprimer_sous_arbre(a);
-}
-
 // Recherche si un mot figure dans un dictionnaire
 int trouver_mot(const arbre_t *a,const char *s){
 	unsigned i,idx_cur,n = strlen(s);
@@ -70,38 +44,6 @@ int trouver_mot(const arbre_t *a,const char *s){
 		else noeud_cur = noeud_cur->fils[idx_cur];
 	}
 	return 1;
-}
-/*
-void afficherArbre(const arbre_t *a){
-	printf("bla\n");
-	const noeud_t *noeud_cur = a;
-	int i=0;
-	noeud_cur = noeud_cur->fils[i];
-	while( i<15 ){
-		printf("bla\n");
-
-		char cur_c = noeud_cur->lettre;
-		printf("%c\n|",cur_c );
-		int j = 0;
-		while(noeud_cur->fils[j] != NULL){
-			char fils_c = noeud_cur->fils[j]->lettre; 
-			printf("%c\n|",fils_c );
-			j++;
-		}
-		noeud_cur = noeud_cur->fils[i];
-		i++;
-	}
-}*/
-
-void ajoute_medor(arbre_t *a,const char *s){
-	printf("ajoute le mot %s",s);
-	ajouter_mot(a,s);
-}
-
-
-void cherche_medor(const arbre_t *a,const char *s){
-	int trouve = trouver_mot(a,s);
-	printf("est ce que le dictionnaire contient %s ? %i\n",s,trouve);
 }
 
 /*int main(int argc, char** argv){
