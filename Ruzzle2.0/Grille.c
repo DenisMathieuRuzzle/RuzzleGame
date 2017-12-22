@@ -132,16 +132,17 @@ int Calcul_score(MotTrouver* listeMot, int taille_listeMot){
 
 void Ajout_Lettre_Mot(MotTrouver* mot[], int i, Lettre le){
 
-	mot[i]->taille ++;
-	printf("plop0\n");
-	mot[i]->l = realloc(mot[i]->l,((mot[i]->taille)*sizeof(Lettre)));
+	printf("plop1\n");
+	printf("cpt : %d = lettre : %c \n", i, le.c);
+	mot[i]->taille++;
+	mot[i]->l = realloc(mot[i]->l,((mot[i]->taille+1)*sizeof(Lettre)));
 	mot[i]->l[mot[i]->taille] = le;
 }
 
 void Ajout_mot_tableauMot(MotTrouver* listeMot[],MotTrouver* mot, int taille_listeMot){
 
 	taille_listeMot++;
-	printf("plop1\n");
+	printf("plop2\n");
 	listeMot = realloc(listeMot,(taille_listeMot*sizeof(MotTrouver)));
 	listeMot[taille_listeMot] = mot;
 }
@@ -157,12 +158,16 @@ char* MotTrouver_To_String(MotTrouver* mot){
 
 void Concat_Tab_MotTouver(MotTrouver* listeMot1[], int taille1, MotTrouver* listeMot2[], int taille2){
 
-	printf("plop2\n");
-	listeMot1 = realloc(listeMot1,(taille1+taille2)*sizeof(MotTrouver));
-	int i;
+	printf("plop3\n");
+	if(listeMot1 == NULL){
+		listeMot2 = listeMot1;
+	}else{
+		listeMot1 = realloc(listeMot1,(taille1+taille2+2)*sizeof(MotTrouver));
+		int i;
 
-	for(i=taille1;i<=(taille1+taille2);i++){
-		listeMot1[i] = listeMot2[i-taille1];
+		for(i=taille1;i<(taille1+taille2);i++){
+			listeMot1[i] = listeMot2[i-taille1];
+		}
 	}
 }
 
@@ -178,7 +183,7 @@ void Resolve_Grille(arbre_t* a, Plate* b, MotTrouver* Rez[], int taille_Rez){
 			mot[0]->taille = 0;
 			mot[0]->l = malloc(sizeof(Lettre));
 			Ajout_Lettre_Mot(mot,0,b->Grille[k][l]);
-			taille2 = Resolve_Grille_Partie_Recursive(mot,a,b,k,l);
+			taille2 = Resolve_Grille_Partie_Recursive(mot,a,b,k,l,0);
 			Concat_Tab_MotTouver(Rez,taille_Rez,mot,taille2);
 		}
 
@@ -193,79 +198,87 @@ void Resolve_Grille(arbre_t* a, Plate* b, MotTrouver* Rez[], int taille_Rez){
 *	Puis on relance la fonction en changeant i et j en fonction 
 *				de la case ou on veut aller
 */
-int Resolve_Grille_Partie_Recursive(MotTrouver* mot[], arbre_t* a, Plate* b, int i, int j){
-	printf("plop0.1\n");
-	int cpt = 0;
+int Resolve_Grille_Partie_Recursive(MotTrouver* mot[], arbre_t* a, Plate* b, int i, int j, int z){
+	printf("plop0\n");
+	int cpt = z;
 	//Case en dessous
 	if(((i+1)>=0)&&((i+1)<=b->nbligne)){
+		printf("i+1 : %d <=> j : %d <=> cpt : %d\n", i+1,j,cpt+1);
 		Ajout_Lettre_Mot(mot,cpt,b->Grille[i+1][j]);
 		if(trouver_mot(a,MotTrouver_To_String(mot[0]))==1){
 			Ajout_mot_tableauMot(mot,mot[cpt],cpt);
 			cpt++;
-			Resolve_Grille_Partie_Recursive(mot,a,b,i+1,j);
+			cpt = Resolve_Grille_Partie_Recursive(mot,a,b,i+1,j,cpt);
 		}
 	}
 	//Case au dessus
 	if(((i-1)>=0)&&((i-1)<=b->nbligne)){
+		printf("i+1 : %d <=> j : %d <=> cpt+1 : %d\n", i+1,j,cpt+1);
 		Ajout_Lettre_Mot(mot,cpt,b->Grille[i-1][j]);
 		if(trouver_mot(a,MotTrouver_To_String(mot[0]))==1){
 			Ajout_mot_tableauMot(mot,mot[cpt],cpt);
 			cpt++;
-			Resolve_Grille_Partie_Recursive(mot,a,b,i-1,j);
+			cpt = Resolve_Grille_Partie_Recursive(mot,a,b,i-1,j,cpt);
 		}
 	}
 	//Case a droite
 	if(((j+1)>=0)&&((j+1)<=b->nbcolone)){
+		printf("i+1 : %d <=> j : %d <=> cpt+1 : %d\n", i+1,j,cpt+1);
 		Ajout_Lettre_Mot(mot,cpt,b->Grille[i][j+1]);
 		if(trouver_mot(a,MotTrouver_To_String(mot[0]))==1){
 			Ajout_mot_tableauMot(mot,mot[cpt],cpt);
 			cpt++;
-			Resolve_Grille_Partie_Recursive(mot,a,b,i,j+1);
+			cpt = Resolve_Grille_Partie_Recursive(mot,a,b,i,j+1,cpt);
 		}
 	}
 	//Case a gauche
 	if(((j-1)>=0)&&((j-1)<=b->nbcolone)){
+		printf("i+1 : %d <=> j : %d <=> cpt+1 : %d\n", i+1,j,cpt+1);
 		Ajout_Lettre_Mot(mot,cpt,b->Grille[i][j-1]);
 		if(trouver_mot(a,MotTrouver_To_String(mot[0]))==1){
 			Ajout_mot_tableauMot(mot,mot[cpt],cpt);
 			cpt++;
-			Resolve_Grille_Partie_Recursive(mot,a,b,i,j-1);
+			cpt = Resolve_Grille_Partie_Recursive(mot,a,b,i,j-1,cpt);
 		}
 	}
 	//Case en bas a droite
 	if((((i+1)>=0)&&((i+1)<=b->nbligne))&&(((j+1)>=0)&&((j+1)<=b->nbcolone))){
+		printf("i+1 : %d <=> j : %d <=> cpt+1 : %d\n", i+1,j,cpt+1);
 		Ajout_Lettre_Mot(mot,cpt,b->Grille[i+1][j+1]);
 		if(trouver_mot(a,MotTrouver_To_String(mot[0]))==1){
 			Ajout_mot_tableauMot(mot,mot[cpt],cpt);
 			cpt++;
-			Resolve_Grille_Partie_Recursive(mot,a,b,i+1,j+1);
+			cpt = Resolve_Grille_Partie_Recursive(mot,a,b,i+1,j+1,cpt);
 		}
 	}
 	//Case en bas a gauche
 	if((((i+1)>=0)&&((i+1)<=b->nbligne))&&(((j-1)>=0)&&((j-1)<=b->nbcolone))){
+		printf("i+1 : %d <=> j : %d <=> cpt+1 : %d\n", i+1,j,cpt+1);
 		Ajout_Lettre_Mot(mot,cpt,b->Grille[i+1][j-1]);
 		if(trouver_mot(a,MotTrouver_To_String(mot[0]))==1){
 			Ajout_mot_tableauMot(mot,mot[cpt],cpt);
 			cpt++;
-			Resolve_Grille_Partie_Recursive(mot,a,b,i+1,j-1);
+			cpt = Resolve_Grille_Partie_Recursive(mot,a,b,i+1,j-1,cpt);
 		}
 	}
 	//Case en haut a gauche
 	if((((i-1)>=0)&&((i-1)<=b->nbligne))&&(((j-1)>=0)&&((j-1)<=b->nbcolone))){
+		printf("i+1 : %d <=> j : %d <=> cpt+1 : %d\n", i+1,j,cpt+1);
 		Ajout_Lettre_Mot(mot,cpt,b->Grille[i-1][j-1]);
 		if(trouver_mot(a,MotTrouver_To_String(mot[0]))==1){
 			Ajout_mot_tableauMot(mot,mot[cpt],cpt);
 			cpt++;
-			Resolve_Grille_Partie_Recursive(mot,a,b,i-1,j-1);
+			cpt = Resolve_Grille_Partie_Recursive(mot,a,b,i-1,j-1,cpt);
 		}
 	}
 	//Case en haut a droite
 	if((((i-1)>=0)&&((i-1)<=b->nbligne))&&(((j+1)>=0)&&((j+1)<=b->nbcolone))){
+		printf("i+1 : %d <=> j : %d <=> cpt+1 : %d\n", i+1,j,cpt+1);
 		Ajout_Lettre_Mot(mot,cpt,b->Grille[i-1][j+1]);
 		if(trouver_mot(a,MotTrouver_To_String(mot[0]))==1){
 			Ajout_mot_tableauMot(mot,mot[cpt],cpt);
 			cpt++;
-			Resolve_Grille_Partie_Recursive(mot,a,b,i-1,j+1);
+			cpt = Resolve_Grille_Partie_Recursive(mot,a,b,i-1,j+1,cpt);
 		}
 	}
 	return cpt;
@@ -322,6 +335,13 @@ int main(int argc, char** argv){
 	Rez[0] = malloc(sizeof(MotTrouver));
 	Rez[0]->taille = 0;
 	Rez[0]->l = malloc(sizeof(Lettre));
+	/*
+	* 	J'ai laisser la ligne ci dessous car cette etape ne fonctionne pas
+	*	 En effet dans la fonction Resolve_Grille_Partie_Recursive lors de 
+	*	la première etape d'Ajout_lettre_Mot le mot n'existe pas encore 
+	*	puisque qu'on ne sait pas si il est présent dans le dictionnaire
+	*	et qu'on ne veut l'ajouter que ci c'est c'est le cas.
+	*/
 	Resolve_Grille(a,board,Rez,0);
 
 	Delete_Board(board);

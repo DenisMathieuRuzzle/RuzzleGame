@@ -34,6 +34,17 @@ noeud_t *creer_fils(noeud_t *n,const char c){
 	return n->fils[idx];
 }
 
+// Ajoute un mot dans l'arbre étant donné sa racine
+void ajouter_mot(arbre_t *a,const char *s){
+	unsigned i,idx_cur,n = strlen(s);
+	noeud_t *noeud_cur = a;
+	for(i=0;i<n;++i){
+		idx_cur = char2index(s[i]);
+		noeud_cur = creer_fils(noeud_cur,s[i]);
+	}
+	creer_fils(noeud_cur,'\0');
+}
+
 // Recherche si un mot figure dans un dictionnaire
 int trouver_mot(const arbre_t *a,const char *s){
 	unsigned i,idx_cur,n = strlen(s);

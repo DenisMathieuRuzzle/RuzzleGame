@@ -47,6 +47,6 @@ void Ajout_mot_tableauMot(MotTrouver* listeMot[],MotTrouver* mot, int taille_lis
 char* MotTrouver_To_String(MotTrouver* mot);
 void Concat_Tab_MotTouver(MotTrouver* listeMot1[], int taille1, MotTrouver* listeMot2[], int taille2);
 void Resolve_Grille(arbre_t* a, Plate* b, MotTrouver* Rez[], int taille_Rez);
-int Resolve_Grille_Partie_Recursive(MotTrouver* mot[], arbre_t* a, Plate* b, int i, int j);
+int Resolve_Grille_Partie_Recursive(MotTrouver* mot[], arbre_t* a, Plate* b, int i, int j, int z);
 
 #endif		/* _Grille_H_*/

@@ -19,6 +19,7 @@ unsigned char2index(const char c);
 noeud_t *creer_noeud(const char c);
 arbre_t *creer_arbre();
 noeud_t *creer_fils(noeud_t *n,const char c);
+void ajouter_mot(arbre_t *a,const char *s);
 int trouver_mot(const arbre_t *a,const char *s);
 
-#endif		/* _Grille_H_*/
+#endif		/* ARBRE_H*/
